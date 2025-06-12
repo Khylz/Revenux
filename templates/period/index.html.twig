@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Périodes{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Mes Périodes</h1>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newPeriodModal">
+                <i class="fas fa-plus"></i> Nouvelle Période
+            </button>
+        </div>
+
+        {% if periodsData is empty %}
+            <div class="alert alert-info">
+                Aucune période n'a été enregistrée pour le moment.
+            </div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Date de début</th>
+                            <th>Date de fin</th>
+                            <th>Revenus</th>
+                            <th>Dépenses</th>
+                            <th>Solde</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for data in periodsData %}
+                        <tr>
+                            <td>{{ data.period.periodName }}</td>
+                            <td>{{ data.period.startDate ? data.period.startDate|date('d/m/Y') : '' }}</td>
+                            <td>{{ data.period.endDate ? data.period.endDate|date('d/m/Y') : '' }}</td>
+                            <td class="text-success">{{ data.totalIncome|number_format(2, ',', ' ') }} €</td>
+                            <td class="text-danger">{{ data.totalExpense|number_format(2, ',', ' ') }} €</td>
+                            <td class="{% if data.balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                {{ data.balance|number_format(2, ',', ' ') }} €
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#showPeriodModal{{ data.period.id }}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editPeriodModal{{ data.period.id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deletePeriodModal{{ data.period.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Modal Nouvelle Période #}
+    <div class="modal fade" id="newPeriodModal" tabindex="-1" aria-labelledby="newPeriodModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="newPeriodModalLabel">Nouvelle Période</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(form, {'action': path('app_period_index')}) }}
+                        <div class="mb-3">
+                            {{ form_label(form.periodName, 'Nom de la période') }}
+                            {{ form_widget(form.periodName, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.startDate, 'Date de début') }}
+                            {{ form_widget(form.startDate, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.endDate, 'Date de fin') }}
+                            {{ form_widget(form.endDate, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.periodType, 'Type de période') }}
+                            {{ form_widget(form.periodType, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="text-center mt-3">
+                            <button type="submit" class="btn btn-primary">Créer</button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Modals pour chaque période #}
+    {% for data in periodsData %}
+        {# Modal Afficher Période #}
+        <div class="modal fade" id="showPeriodModal{{ data.period.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">Détails de la Période</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Nom:</strong> {{ data.period.periodName }}</p>
+                        <p><strong>Date de début:</strong> {{ data.period.startDate ? data.period.startDate|date('d/m/Y') : '' }}</p>
+                        <p><strong>Date de fin:</strong> {{ data.period.endDate ? data.period.endDate|date('d/m/Y') : '' }}</p>
+                        <p><strong>Type:</strong> {{ data.period.periodType }}</p>
+                        <hr>
+                        <p><strong>Revenus:</strong> <span class="text-success">{{ data.totalIncome|number_format(2, ',', ' ') }} €</span></p>
+                        <p><strong>Dépenses:</strong> <span class="text-danger">{{ data.totalExpense|number_format(2, ',', ' ') }} €</span></p>
+                        <p><strong>Solde:</strong> <span class="{% if data.balance >= 0 %}text-success{% else %}text-danger{% endif %}">{{ data.balance|number_format(2, ',', ' ') }} €</span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Modal Modifier Période #}
+        <div class="modal fade" id="editPeriodModal{{ data.period.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">Modifier la Période</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ form_start(editForms[data.period.id], {'action': path('app_period_index')}) }}
+                            <input type="hidden" name="edit_id" value="{{ data.period.id }}">
+                            <div class="mb-3">
+                                {{ form_label(editForms[data.period.id].periodName, 'Nom de la période') }}
+                                {{ form_widget(editForms[data.period.id].periodName, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(editForms[data.period.id].startDate, 'Date de début') }}
+                                {{ form_widget(editForms[data.period.id].startDate, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(editForms[data.period.id].endDate, 'Date de fin') }}
+                                {{ form_widget(editForms[data.period.id].endDate, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_label(editForms[data.period.id].periodType, 'Type de période') }}
+                                {{ form_widget(editForms[data.period.id].periodType, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="text-center mt-3">
+                                <button type="submit" class="btn btn-warning">Mettre à jour</button>
+                            </div>
+                        {{ form_end(editForms[data.period.id]) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Modal Supprimer Période #}
+        <div class="modal fade" id="deletePeriodModal{{ data.period.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Êtes-vous sûr de vouloir supprimer la période "{{ data.period.periodName }}" ?</p>
+                        <p class="text-danger">Cette action est irréversible.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <form method="post" action="{{ path('app_period_delete', {'id': data.period.id}) }}" style="display: inline-block">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ data.period.id) }}">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

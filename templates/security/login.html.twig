@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion de Revenus : Connexion{% endblock %}
+
+{% block body %}
+<div class="container-fluid blocklogin">
+    <div class="row">
+        <!-- Partie image à gauche -->
+        <div class="col-md-5 image-side">
+            <img class="img-fluid imgsign" src="{{ asset('divers/images/imagesign.jpg') }}" alt="Image de connexion">
+        </div>
+        <div class="col-md-1"></div>
+
+        <!-- Partie formulaire de connexion à droite -->
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+            <div class="card p-4 shadow-lg w-100">
+                <h4 class="font-weight-normal pb-4">Connexion</h4>
+                
+                <form method="post">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="mb-3">
+                            Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Se déconnecter</a>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="inputEmail">Adresse email</label>
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="inputPassword">Mot de passe</label>
+                        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <div class="mb-3 text-center">
+                        <button class="btn btnss" type="submit">Se connecter</button>
+                    </div>
+
+                    <div class="text-center">
+                        <p>Pas encore inscrit ? <a href="{{ path('app_register') }}">Créer un compte</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

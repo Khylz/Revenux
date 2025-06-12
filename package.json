@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@hotwired/stimulus": "^3.0.0",
+    "@hotwired/turbo": "^7.1.1 || ^8.0",
+    "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
+    "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
+    "@symfony/webpack-encore": "^5.x",
+    "file-loader": "^6.0.0",
+    "webpack-cli": "^5.0.0",
+    "webpack-notifier": "^1.15.0"
+  },
+  "scripts": {
+    "dev": "npx encore dev",
+    "watch": "npx encore dev --watch",
+    "build": "npx encore production"
+  }
+}

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une nouvelle période{% endblock %}
+
+{% block body %}
+    <div class="container d-flex align-items-center justify-content-center min-vh-100">
+        <div class="row w-100">
+            <div class="col-md-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h1 class="card-title mb-0">Créer une nouvelle période</h1>
+                    </div>
+                    <div class="card-body">
+                        {{ include('period/_form.html.twig') }}
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ path('app_period_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

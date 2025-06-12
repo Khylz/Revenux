@@ -1,0 +1,181 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Dépenses{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Mes Dépenses</h1>
+            <div>
+                <button type="button" class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#newCategoryModal">
+                    <i class="fas fa-folder-plus"></i> Nouvelle Catégorie
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#newExpenseModal">
+                    <i class="fas fa-plus"></i> Nouvelle Dépense
+                </button>
+            </div>
+        </div>
+
+        {% if expenses is empty %}
+            <div class="alert alert-info">
+                Aucune dépense n'a été enregistrée pour le moment.
+            </div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Catégorie</th>
+                            <th>Description</th>
+                            <th>Montant</th>
+                            <th>Période</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for expense in expenses %}
+                        <tr>
+                            <td>{{ expense.expenseDate ? expense.expenseDate|date('d/m/Y') : '' }}</td>
+                            <td>{{ expense.expenseCategory ? expense.expenseCategory.categoryName : 'Non catégorisé' }}</td>
+                            <td>{{ expense.description }}</td>
+                            <td>{{ expense.amount|number_format(2, ',', ' ') }} €</td>
+                            <td>{{ expense.period.periodName }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#showExpenseModal{{ expense.id }}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editExpenseModal{{ expense.id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteExpenseModal{{ expense.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Modal Nouvelle Dépense #}
+    <div class="modal fade" id="newExpenseModal" tabindex="-1" aria-labelledby="newExpenseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="newExpenseModalLabel">Nouvelle Dépense</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ include('expense/_form.html.twig', {'form': form}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Modal Nouvelle Catégorie #}
+    <div class="modal fade" id="newCategoryModal" tabindex="-1" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="newCategoryModalLabel">Nouvelle Catégorie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ include('expense_category/_form.html.twig', {'form': categoryForm}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Modals pour chaque dépense #}
+    {% for expense in expenses %}
+        {# Modal Afficher Dépense #}
+        <div class="modal fade" id="showExpenseModal{{ expense.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">Détails de la Dépense</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Date:</strong> {{ expense.expenseDate ? expense.expenseDate|date('d/m/Y') : '' }}</p>
+                        <p><strong>Catégorie:</strong> {{ expense.expenseCategory ? expense.expenseCategory.categoryName : 'Non catégorisé' }}</p>
+                        <p><strong>Description:</strong> {{ expense.description }}</p>
+                        <p><strong>Montant:</strong> {{ expense.amount|number_format(2, ',', ' ') }} €</p>
+                        <p><strong>Période:</strong> {{ expense.period.periodName }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Modal Modifier Dépense #}
+        <div class="modal fade" id="editExpenseModal{{ expense.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">Modifier la Dépense</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ form_start(editForms[expense.id], {'action': path('app_expense_index')}) }}
+                            <input type="hidden" name="edit_id" value="{{ expense.id }}">
+                            {{ form_row(editForms[expense.id].period, {
+                                'label': 'Période',
+                                'attr': {'placeholder': 'Sélectionnez une période'}
+                            }) }}
+                            {{ form_row(editForms[expense.id].expenseCategory, {
+                                'label': 'Catégorie',
+                                'attr': {'placeholder': 'Sélectionnez une catégorie'}
+                            }) }}
+                            {{ form_row(editForms[expense.id].description, {
+                                'label': 'Description',
+                                'attr': {'placeholder': 'Entrez une description (optionnel)'}
+                            }) }}
+                            {{ form_row(editForms[expense.id].amount, {
+                                'label': 'Montant',
+                                'attr': {'placeholder': 'Entrez le montant'}
+                            }) }}
+                            {{ form_row(editForms[expense.id].expenseDate, {
+                                'label': 'Date',
+                                'attr': {'placeholder': 'Sélectionnez une date'}
+                            }) }}
+                            <div class="text-center mt-3">
+                                <button type="submit" class="btn btn-warning">Mettre à jour</button>
+                            </div>
+                        {{ form_end(editForms[expense.id]) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Modal Supprimer Dépense #}
+        <div class="modal fade" id="deleteExpenseModal{{ expense.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Êtes-vous sûr de vouloir supprimer cette dépense ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <form method="post" action="{{ path('app_expense_delete', {'id': expense.id}) }}" style="display: inline-block">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ expense.id) }}">
+                            <button class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

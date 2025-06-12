@@ -1,0 +1,25 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{{ form_start(form) }}
+    {{ form_row(form.period, {
+        'label': 'Période',
+        'attr': {'placeholder': 'Sélectionnez une période'}
+    }) }}
+    {{ form_row(form.incomeCategory, {
+        'label': 'Catégorie de revenu',
+        'attr': {'placeholder': 'Sélectionnez une catégorie'}
+    }) }}
+    {{ form_row(form.description, {
+        'label': 'Description',
+        'attr': {'placeholder': 'Entrez une description (optionnel)'}
+    }) }}
+    {{ form_row(form.amount, {
+        'label': 'Montant',
+        'attr': {'placeholder': 'Entrez le montant'}
+    }) }}
+    {{ form_row(form.incomeDate, {
+        'label': 'Date du revenu',
+        'attr': {'placeholder': 'Sélectionnez une date'}
+    }) }}
+    <button class="btn btn-success mt-3">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }} 

@@ -1,0 +1,43 @@
+/* Sommaire */
+/* 
+
+1: Border Center
+2: Copyright
+3: Text S'inscrire ?
+4: Text Mention Légale
+5: Box Shadow
+
+
+*/
+
+/* Border Center */
+
+.bordercenterft{
+    border-top: solid 1px rgb(223, 211, 211);
+}
+
+/* Copyright */
+
+.copyright{
+    font-weight: bold;
+}
+
+/* Text S'inscrire ? */
+
+.inscriptiontxt{
+    text-decoration: none;
+    color: red;
+}
+
+/* Text Mention Légale */
+
+.mentionlgtxt{
+    text-decoration: none;
+    color: red;
+}
+
+/* Box Shadow */
+
+.boxshadowft{
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 15px 0px;
+}

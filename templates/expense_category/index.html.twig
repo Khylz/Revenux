@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catégories de Dépenses{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Catégories de Dépenses</h1>
+
+        <div class="d-flex justify-content-end mb-4">
+            <a href="{{ path('app_expense_category_new') }}" class="btn btn-danger">
+                <i class="fas fa-plus"></i> Ajouter une catégorie
+            </a>
+        </div>
+
+        <div class="row">
+            {% for category in expense_categories %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="card-title mb-0">{{ category.categoryName }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ category.description|default('Aucune description') }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between bg-light">
+                            <a href="{{ path('app_expense_category_edit', {'id': category.id}) }}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                            <form method="post" action="{{ path('app_expense_category_delete', {'id': category.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center" role="alert">
+                        Aucune catégorie trouvée. Créez-en une pour commencer !
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %} 

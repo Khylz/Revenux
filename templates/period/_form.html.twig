@@ -1,0 +1,21 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{{ form_start(form) }}
+    {{ form_row(form.periodName, {
+        'label': 'Nom de la période',
+        'attr': {'placeholder': 'Entrez le nom de la période'}
+    }) }}
+    {{ form_row(form.startDate, {
+        'label': 'Date de début',
+        'attr': {'placeholder': 'Sélectionnez la date de début'}
+    }) }}
+    {{ form_row(form.endDate, {
+        'label': 'Date de fin',
+        'attr': {'placeholder': 'Sélectionnez la date de fin'}
+    }) }}
+    {{ form_row(form.periodType, {
+        'label': 'Type de période',
+        'attr': {'placeholder': 'Sélectionnez le type de période'}
+    }) }}
+    <button class="btn btn-primary mt-3">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }} 

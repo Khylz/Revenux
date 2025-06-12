@@ -1,0 +1,25 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{{ form_start(form) }}
+    {{ form_row(form.period, {
+        'label': 'Période',
+        'attr': {'placeholder': 'Sélectionnez une période'}
+    }) }}
+    {{ form_row(form.expenseCategory, {
+        'label': 'Catégorie de dépense',
+        'attr': {'placeholder': 'Sélectionnez une catégorie'}
+    }) }}
+    {{ form_row(form.description, {
+        'label': 'Description',
+        'attr': {'placeholder': 'Entrez une description (optionnel)'}
+    }) }}
+    {{ form_row(form.amount, {
+        'label': 'Montant',
+        'attr': {'placeholder': 'Entrez le montant'}
+    }) }}
+    {{ form_row(form.expenseDate, {
+        'label': 'Date de la dépense',
+        'attr': {'placeholder': 'Sélectionnez une date'}
+    }) }}
+    <button class="btn btn-danger mt-3">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }} 

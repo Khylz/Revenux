@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la Dépense{% endblock %}
+
+{% block body %}
+    <div class="container d-flex align-items-center justify-content-center min-vh-100">
+        <div class="row w-100">
+            <div class="col-md-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-danger text-white text-center">
+                        <h1 class="card-title mb-0">Détails de la Dépense</h1>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><strong>Id:</strong> {{ expense.id }}</p>
+                        <p class="card-text"><strong>Période:</strong> {{ expense.period.periodName }}</p>
+                        <p class="card-text"><strong>Catégorie:</strong> {{ expense.expenseCategory ? expense.expenseCategory.categoryName : 'Non catégorisé' }}</p>
+                        <p class="card-text"><strong>Description:</strong> {{ expense.description | default('N/A') }}</p>
+                        <p class="card-text"><strong>Montant:</strong> {{ expense.amount|format_currency('EUR', locale='fr') }}</p>
+                        <p class="card-text"><strong>Date de la Dépense:</strong> {{ expense.expenseDate ? expense.expenseDate|date('d/m/Y') : '' }}</p>
+                        <p class="card-text"><strong>Date de Création:</strong> {{ expense.creationDate ? expense.creationDate|date('d/m/Y H:i:s') : '' }}</p>
+                        <p class="card-text"><strong>Date de Modification:</strong> {{ expense.modificationDate ? expense.modificationDate|date('d/m/Y H:i:s') : '' }}</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center bg-light">
+                        <a href="{{ path('app_expense_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                        <a href="{{ path('app_expense_edit', {'id': expense.id}) }}" class="btn btn-warning">Modifier</a>
+                        {{ include('expense/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

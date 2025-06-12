@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la Catégorie de Dépense{% endblock %}
+
+{% block body %}
+    <div class="container d-flex align-items-center justify-content-center min-vh-100">
+        <div class="row w-100">
+            <div class="col-md-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-danger text-white text-center">
+                        <h1 class="card-title mb-0">Modifier la catégorie de dépense</h1>
+                    </div>
+                    <div class="card-body">
+                        {{ include('expense_category/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ path('app_expense_category_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

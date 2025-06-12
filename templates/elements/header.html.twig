@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{{ path('app_home') }}">REVENUX</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item mx-4">
+                    <a class="nav-link rubrikhd" href="{{ path('app_home') }}">ACCUEIL</a>
+                </li>
+                <li class="nav-item mx-4">
+                    <a class="nav-link rubrikhd" href="{{ path('app_period_index') }}">PÉRIODES</a>
+                </li>
+                <li class="nav-item mx-4">
+                    <a class="nav-link rubrikhd" href="{{ path('app_income_index') }}">REVENUS</a>
+                </li>
+                <li class="nav-item mx-4">
+                    <a class="nav-link rubrikhd" href="{{ path('app_expense_index') }}">DÉPENSES</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <button id="themeToggle" class="theme-toggle btn btn-link text-light me-3">
+                    <i class="fas fa-sun"></i>
+                </button>
+                {% if app.user %}
+                    <a href="{{ path('app_logout') }}" class="btn btn-outline-light">Déconnexion</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-light me-2">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-light">Inscription</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+  
+  
+  
+    
+  
+    

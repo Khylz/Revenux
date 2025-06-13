@@ -3,54 +3,73 @@
 {% block title %}Gestion de Revenus : Inscription{% endblock %}
 
 {% block body %}
-<div class="container-fluid blockregister">
-    <div class="row">
-        <!-- Partie image à gauche -->
-        <div class="col-md-5 image-side">
-            <img class="img-fluid imgsign" src="{{ asset('divers/images/imagesign.jpg') }}" alt="Image d'inscription">
-        </div>
-        <div class="col-md-1"></div>
-
-        <!-- Partie formulaire d'inscription à droite -->
-        <div class="col-md-6 d-flex justify-content-center align-items-center">
-            <div class="card p-4 shadow-lg w-100">
-                <h4 class="font-weight-normal pb-4">Création de compte</h4>
-                
+<div class="modal fade show" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true" style="display: block;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="registerModalLabel">Création de compte</h5>
+                <a href="{{ path('app_home') }}" type="button" class="btn-close" aria-label="Close"></a>
+            </div>
+            <div class="modal-body">
                 <form method="POST" enctype="multipart/form-data">
                     {{ form_errors(registrationForm) }}
                     {{ form_start(registrationForm) }}
 
-                    <div class="md-3 mb-2"> 
-                        {{ form_widget(registrationForm.firstname, { attr: { class: 'form-control', placeholder: 'Votre prénom' } }) }}  
+                    <div class="mb-3"> 
+                        {{ form_widget(registrationForm.firstname, { 
+                            attr: { 
+                                class: 'form-control', 
+                                placeholder: 'Prénom'
+                            } 
+                        }) }}  
                     </div>
                         
-                    <div class="md-3 mb-2"> 
-                        {{ form_widget(registrationForm.lastname, { attr: { class: 'form-control', placeholder: 'Votre nom' } }) }}  
+                    <div class="mb-3"> 
+                        {{ form_widget(registrationForm.lastname, { 
+                            attr: { 
+                                class: 'form-control', 
+                                placeholder: 'Nom'
+                            } 
+                        }) }}  
                     </div>
                         
-                    <div class="md-3 mb-2"> 
-                        {{ form_widget(registrationForm.email, { attr: { class: 'form-control', placeholder: 'Votre adresse email' } }) }}  
+                    <div class="mb-3"> 
+                        {{ form_widget(registrationForm.email, { 
+                            attr: { 
+                                class: 'form-control', 
+                                placeholder: 'Email'
+                            } 
+                        }) }}  
                     </div>
                     
-                    <div class="md-3 mb-2">  
-                        {{ form_widget(registrationForm.plainPassword, { attr: { class: 'form-control', placeholder: 'Votre mot de passe' } }) }} 
+                    <div class="mb-3">  
+                        {{ form_widget(registrationForm.plainPassword, { 
+                            attr: { 
+                                class: 'form-control', 
+                                placeholder: 'Mot de passe'
+                            } 
+                        }) }} 
                     </div>
                         
-                    <div class="mb-3 mb-2">
-                        <label class="form-check-label">J'accepte les conditions d'utilisation</label>&emsp;&emsp;
-                        {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'form-check-input' } }) }}
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button type="submit" class="btn btnss">
-                                Créer mon compte
-                            </button>   
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form_widget(registrationForm.agreeTerms, { 
+                                attr: { 
+                                    class: 'form-check-input' 
+                                } 
+                            }) }}
+                            <label class="form-check-label">J'accepte les conditions d'utilisation</label>
                         </div>
                     </div>
 
-                    <div class="text-center mt-2">
-                        <p>Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            Créer mon compte
+                        </button>   
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <p class="mb-0">Déjà inscrit ? <a href="{{ path('app_login') }}" class="text-decoration-none">Se connecter</a></p>
                     </div>
 
                     {{ form_end(registrationForm) }}
@@ -59,4 +78,73 @@
         </div>
     </div>
 </div>
+
+<div class="modal-backdrop fade show"></div>
+
+<style>
+.modal-dialog {
+    max-width: 400px;
+}
+
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.modal-header {
+    padding: 1.25rem 1.25rem 0.5rem;
+}
+
+.modal-body {
+    padding: 1.25rem;
+}
+
+.form-control {
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    border: 1px solid #e0e0e0;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.15rem rgba(0,123,255,0.1);
+    border-color: #80bdff;
+}
+
+.btn-primary {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background-color: #0d6efd;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+}
+
+.form-check {
+    padding-left: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.form-check-input {
+    margin-left: -1.5rem;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.text-decoration-none {
+    color: #0d6efd;
+}
+
+.text-decoration-none:hover {
+    color: #0b5ed7;
+}
+</style>
 {% endblock %}

@@ -85,4 +85,28 @@ class ExpenseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getTotalByUserAndPeriod($user, $start, $end)
+    {
+        return $this->createQueryBuilder('e')
+            ->select('SUM(e.amount)')
+            ->where('e.user = :user')
+            ->andWhere('e.expenseDate >= :start')
+            ->andWhere('e.expenseDate <= :end')
+            ->setParameter('user', $user)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
+
+    public function getTotalByUser($user)
+    {
+        return $this->createQueryBuilder('e')
+            ->select('SUM(e.amount)')
+            ->where('e.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
 } 

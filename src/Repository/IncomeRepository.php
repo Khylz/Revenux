@@ -85,4 +85,28 @@ class IncomeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getTotalByUserAndPeriod($user, $start, $end)
+    {
+        return $this->createQueryBuilder('i')
+            ->select('SUM(i.amount)')
+            ->where('i.user = :user')
+            ->andWhere('i.incomeDate >= :start')
+            ->andWhere('i.incomeDate <= :end')
+            ->setParameter('user', $user)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
+
+    public function getTotalByUser($user)
+    {
+        return $this->createQueryBuilder('i')
+            ->select('SUM(i.amount)')
+            ->where('i.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
 } 

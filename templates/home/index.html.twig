@@ -43,7 +43,151 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Sélecteur de période unique pour les graphiques -->
+                <div style="text-align:center; margin-top: 30px; margin-bottom: 20px;">
+                    <label for="masterPeriodSelect"><strong>Choisir la période :</strong></label>
+                    <select id="masterPeriodSelect" class="form-select" style="display:inline-block; width:auto;">
+                        {# <option value="week">Cette semaine</option>
+                        <option value="month" selected>Ce mois</option> #}
+                        <option value="year">Cette année</option>
+                        <option value="all">Tout</option>
+                    </select>
+                </div>
+
+                <!-- Conteneur des deux graphiques -->
+                <div class="row mt-4">
+                    <div class="col-md-6 d-flex justify-content-center">
+                        <!-- Doughnut Chart (Gauche) -->
+                        <div style="width: 100%; max-width:400px;">
+                            <h4 style="text-align:center;">
+                                Répartition pour <span id="doughnutPeriodName"></span>
+                            </h4>
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-center">
+                        <!-- Line Chart (Droite) -->
+                        <div style="width: 100%; max-width:700px;">
+                             <h4 style="text-align:center;">
+                                Évolution pour <span id="linePeriodName"></span>
+                            </h4>
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        window.periodData = {{ periodData|json_encode|raw }};
+        window.lineChartData = {{ lineChartData|json_encode|raw }};
+
+        let currentSelectedPeriod = 'month'; // Default period, matches selected option
+
+        // Function to update period names in titles
+        function updatePeriodNames(periodKey) {
+            const periodSelect = document.getElementById('masterPeriodSelect');
+            const selectedOptionText = periodSelect.options[periodSelect.selectedIndex].text;
+            document.getElementById('doughnutPeriodName').textContent = selectedOptionText;
+            document.getElementById('linePeriodName').textContent = selectedOptionText;
+        }
+
+        // Doughnut Chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const doughnutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Revenus', 'Dépenses'],
+                datasets: [{
+                    data: [
+                        window.periodData[currentSelectedPeriod].incomes,
+                        window.periodData[currentSelectedPeriod].expenses
+                    ],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(220, 53, 69, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(220, 53, 69, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: {
+                        display: false // Title handled by h4 above
+                    }
+                }
+            }
+        });
+
+        // Line Chart
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        const lineChart = new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: window.lineChartData[currentSelectedPeriod].labels,
+                datasets: [
+                    {
+                        label: 'Revenus',
+                        data: window.lineChartData[currentSelectedPeriod].incomes,
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Dépenses',
+                        data: window.lineChartData[currentSelectedPeriod].expenses,
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: {
+                        display: false // Title handled by h4 above
+                    }
+                }
+            }
+        });
+
+        // Initial update of period names and charts
+        updatePeriodNames(currentSelectedPeriod);
+
+        // Event Listener for master period selector
+        document.getElementById('masterPeriodSelect').addEventListener('change', function(e) {
+            currentSelectedPeriod = e.target.value;
+            updatePeriodNames(currentSelectedPeriod); // Update h4 text
+
+            // Update Doughnut Chart
+            doughnutChart.data.datasets[0].data = [
+                window.periodData[currentSelectedPeriod].incomes,
+                window.periodData[currentSelectedPeriod].expenses
+            ];
+            doughnutChart.update();
+
+            // Update Line Chart
+            lineChart.data.labels = window.lineChartData[currentSelectedPeriod].labels;
+            lineChart.data.datasets[0].data = window.lineChartData[currentSelectedPeriod].incomes;
+            lineChart.data.datasets[1].data = window.lineChartData[currentSelectedPeriod].expenses;
+            lineChart.update();
+        });
+    });
+    </script>
+
+    
 {% endblock %} 
